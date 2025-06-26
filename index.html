@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmap Visual Semanal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .drag-over {
+            background-color: #e0f2fe !important;
+            border-color: #0284c7 !important;
+        }
+        .project-card {
+            transition: all 0.2s ease;
+            cursor: move;
+        }
+        .project-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="max-w-7xl mx-auto p-6">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center space-x-3">
+                    <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <h1 class="text-2xl font-bold text-gray-800">Roadmap Visual Semanal</h1>
+                </div>
+                <button onclick="showAddModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-blue-700 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span>Agregar Proyecto</span>
+                </button>
+            </div>
+
+            <!-- Categories Legend -->
+            <div class="flex flex-wrap gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center space-x-2">
+                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6"></path>
+                    </svg>
+                    <span class="text-sm font-medium">Profesionales</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+                    </svg>
+                    <span class="text-sm font-medium">Creativos</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    <span class="text-sm font-medium">Inteligencia Artificial</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="text-sm font-medium">Académico (Cybersecurity & IA)</span>
+                </div>
+            </div>
+
+            <!-- Week Navigation -->
+            <div class="flex items-center justify-center space-x-4 mb-6">
+                <button onclick="changeWeek(-1)" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <span class="text-lg font-medium">Vista de 5 Semanas</span>
+                <button onclick="changeWeek(1)" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Roadmap Grid -->
+            <div class="overflow-x-auto">
+                <div id="roadmap-grid" class="grid grid-cols-5 gap-3 min-w-max">
+                    <!-- Weeks will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Project Modal -->
+    <div id="add-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 class="text-xl font-bold mb-4">Agregar Nuevo Proyecto</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Título del Proyecto</label>
+                    <input type="text" id="project-title" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Nombre del proyecto...">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Categoría</label>
+                    <select id="project-category" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="professional">Profesional</option>
+                        <option value="creative">Creativo</option>
+                        <option value="ai">Inteligencia Artificial</option>
+                        <option value="academic">Académico (Cybersecurity & IA)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Estado</label>
+                    <select id="project-status" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="idea">Idea</option>
+                        <option value="in-development">En Desarrollo</option>
+                        <option value="in-progress">En Progreso</option>
+                        <option value="completed">Completado</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Prioridad</label>
+                    <select id="project-priority" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="low">Baja</option>
+                        <option value="medium" selected>Media</option>
+                        <option value="high">Alta</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Semana</label>
+                    <select id="project-week" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Descripción (Opcional)</label>
+                    <textarea id="project-description" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" rows="2" placeholder="Breve descripción del proyecto..."></textarea>
+                </div>
+            </div>
+
+            <div class="flex space-x-3 mt-6">
+                <button onclick="addProject()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    Agregar Proyecto
+                </button>
+                <button onclick="hideAddModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400 transition-colors">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentWeekStart = 0;
+        let projects = [
+            {
+                id: 1,
+                title: "Silver Academy",
+                category: "professional",
+                status: "in-progress",
+                priority: "high",
+                week: 0,
+                progress: 65,
+                description: "Plataforma educativa en desarrollo"
+            }
+        ];
+
+        const categories = {
+            professional: { name: 'Profesionales', color: 'bg-blue-500', lightColor: 'bg-blue-50', borderColor: 'border-blue-500' },
+            creative: { name: 'Creativos', color: 'bg-purple-500', lightColor: 'bg-purple-50', borderColor: 'border-purple-500' },
+            ai: { name: 'Inteligencia Artificial', color: 'bg-green-500', lightColor: 'bg-green-50', borderColor: 'border-green-500' },
+            academic: { name: 'Académico', color: 'bg-orange-500', lightColor: 'bg-orange-50', borderColor: 'border-orange-500' }
+        };
+
+        const statuses = {
+            idea: { name: 'Idea', color: 'bg-gray-200 text-gray-700' },
+            'in-development': { name: 'En Desarrollo', color: 'bg-yellow-200 text-yellow-800' },
+            'in-progress': { name: 'En Progreso', color: 'bg-blue-200 text-blue-800' },
+            completed: { name: 'Completado', color: 'bg-green-200 text-green-800' }
+        };
+
+        const priorities = {
+            low: { name: 'Baja', color: 'text-gray-500' },
+            medium: { name: 'Media', color: 'text-yellow-600' },
+            high: { name: 'Alta', color: 'text-red-600' }
+        };
+
+        function getWeekLabel(weekOffset) {
+            const today = new Date();
+            const weekStart = new Date(today);
+            weekStart.setDate(today.getDate() - today.getDay() + (weekOffset * 7));
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekStart.getDate() + 6);
+            
+            const formatDate = (date) => `${date.getDate()}/${date.getMonth() + 1}`;
+            
+            if (weekOffset === 0) return `Esta Semana (${formatDate(weekStart)} - ${formatDate(weekEnd)})`;
+            if (weekOffset === 1) return `Próxima Semana (${formatDate(weekStart)} - ${formatDate(weekEnd)})`;
+            if (weekOffset === -1) return `Semana Pasada (${formatDate(weekStart)} - ${formatDate(weekEnd)})`;
+            return `Semana ${weekOffset > 0 ? '+' : ''}${weekOffset} (${formatDate(weekStart)} - ${formatDate(weekEnd)})`;
+        }
+
+        function renderRoadmap() {
+            const grid = document.getElementById('roadmap-grid');
+            const visibleWeeks = Array.from({ length: 5 }, (_, i) => currentWeekStart + i - 2);
+            
+            grid.innerHTML = '';
+            
+            visibleWeeks.forEach(weekOffset => {
+                const weekColumn = document.createElement('div');
+                weekColumn.className = `w-80 min-h-[600px] p-4 rounded-lg border-2 border-dashed transition-colors ${
+                    weekOffset === 0 ? 'border-blue-300 bg-blue-50' : 'border-gray-200 bg-white'
+                }`;
+                weekColumn.dataset.week = weekOffset;
+                
+                // Week title
+                const weekTitle = document.createElement('h3');
+                weekTitle.className = 'font-medium text-sm mb-4 text-center sticky top-0 bg-inherit pb-2 border-b';
+                weekTitle.textContent = getWeekLabel(weekOffset);
+                weekColumn.appendChild(weekTitle);
+                
+                // Categories
+                const categoriesContainer = document.createElement('div');
+                categoriesContainer.className = 'space-y-4';
+                
+                Object.entries(categories).forEach(([categoryKey, categoryInfo]) => {
+                    const categoryDiv = document.createElement('div');
+                    
+                    const categoryTitle = document.createElement('h4');
+                    categoryTitle.className = `text-xs font-medium mb-2 flex items-center text-${categoryKey === 'professional' ? 'blue' : categoryKey === 'creative' ? 'purple' : categoryKey === 'ai' ? 'green' : 'orange'}-600`;
+                    categoryTitle.innerHTML = `
+                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        ${categoryInfo.name}
+                    `;
+                    categoryDiv.appendChild(categoryTitle);
+                    
+                    const projectsContainer = document.createElement('div');
+                    projectsContainer.className = 'space-y-2';
+                    
+                    // Filter and render projects
+                    const categoryProjects = projects.filter(p => p.week === weekOffset && p.category === categoryKey);
+                    categoryProjects.forEach(project => {
+                        const projectCard = createProjectCard(project);
+                        projectsContainer.appendChild(projectCard);
+                    });
+                    
+                    categoryDiv.appendChild(projectsContainer);
+                    categoriesContainer.appendChild(categoryDiv);
+                });
+                
+                weekColumn.appendChild(categoriesContainer);
+                
+                // Drag and drop
+                weekColumn.addEventListener('dragover', handleDragOver);
+                weekColumn.addEventListener('drop', handleDrop);
+                weekColumn.addEventListener('dragleave', handleDragLeave);
+                
+                grid.appendChild(weekColumn);
+            });
+            
+            // Update modal week options
+            updateModalWeekOptions(visibleWeeks);
+        }
+
+        function createProjectCard(project) {
+            const categoryInfo = categories[project.category];
+            const statusInfo = statuses[project.status];
+            const priorityInfo = priorities[project.priority];
+            
+            const card = document.createElement('div');
+            card.className = `project-card ${categoryInfo.lightColor} border-l-4 ${categoryInfo.borderColor} rounded-lg p-3 shadow-sm`;
+            card.draggable = true;
+            card.dataset.projectId = project.id;
+            
+            card.innerHTML = `
+                <div class="flex items-start justify-between mb-2">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-4 h-4 text-${project.category === 'professional' ? 'blue' : project.category === 'creative' ? 'purple' : project.category === 'ai' ? 'green' : 'orange'}-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <h4 class="font-medium text-sm">${project.title}</h4>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <svg class="w-3 h-3 ${priorityInfo.color}" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/>
+                        </svg>
+                        <button onclick="deleteProject(${project.id})" class="text-red-500 hover:text-red-700 text-xs">×</button>
+                    </div>
+                </div>
+                ${project.description ? `<p class="text-xs text-gray-600 mb-2">${project.description}</p>` : ''}
+                <div class="flex items-center justify-between mb-2">
+                    <span class="px-2 py-1 rounded text-xs ${statusInfo.color}">${statusInfo.name}</span>
+                </div>
+                ${project.status !== 'idea' ? `
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="${categoryInfo.color} h-2 rounded-full transition-all" style="width: ${project.progress}%"></div>
+                    </div>
+                ` : ''}
+            `;
+            
+            card.addEventListener('dragstart', handleDragStart);
+            
+            return card;
+        }
+
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.dataset.projectId);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            const projectId = parseInt(e.dataTransfer.getData('text/plain'));
+            const newWeek = parseInt(e.currentTarget.dataset.week);
+            moveProject(projectId, newWeek);
+        }
+
+        function moveProject(projectId, newWeek) {
+            const project = projects.find(p => p.id === projectId);
+            if (project) {
+                project.week = newWeek;
+                renderRoadmap();
+            }
+        }
+
+        function deleteProject(projectId) {
+            projects = projects.filter(p => p.id !== projectId);
+            renderRoadmap();
+        }
+
+        function changeWeek(delta) {
+            currentWeekStart += delta;
+            renderRoadmap();
+        }
+
+        function showAddModal() {
+            document.getElementById('add-modal').classList.remove('hidden');
+        }
+
+        function hideAddModal() {
+            document.getElementById('add-modal').classList.add('hidden');
+            // Reset form
+            document.getElementById('project-title').value = '';
+            document.getElementById('project-description').value = '';
+            document.getElementById('project-category').value = 'professional';
+            document.getElementById('project-status').value = 'idea';
+            document.getElementById('project-priority').value = 'medium';
+        }
+
+        function addProject() {
+            const title = document.getElementById('project-title').value.trim();
+            if (!title) return;
+            
+            const project = {
+                id: Date.now(),
+                title: title,
+                category: document.getElementById('project-category').value,
+                status: document.getElementById('project-status').value,
+                priority: document.getElementById('project-priority').value,
+                week: parseInt(document.getElementById('project-week').value),
+                description: document.getElementById('project-description').value,
+                progress: document.getElementById('project-status').value === 'completed' ? 100 : 0
+            };
+            
+            projects.push(project);
+            renderRoadmap();
+            hideAddModal();
+        }
+
+        function updateModalWeekOptions(visibleWeeks) {
+            const weekSelect = document.getElementById('project-week');
+            weekSelect.innerHTML = '';
+            visibleWeeks.forEach(week => {
+                const option = document.createElement('option');
+                option.value = week;
+                option.textContent = getWeekLabel(week);
+                if (week === 0) option.selected = true;
+                weekSelect.appendChild(option);
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderRoadmap();
+        });
+    </script>
+</body>
+</html>
